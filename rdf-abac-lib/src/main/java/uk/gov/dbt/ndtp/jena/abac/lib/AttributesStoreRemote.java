@@ -139,7 +139,7 @@ public class AttributesStoreRemote implements AttributesStore {
             // Response
             //   { "attributes" : [ string1, string2 , ... ] }
             // each string is an attribute-value pair (with any necessary quoting within the string).
-            //   See project https://github.com/National-Digital-Twin/rdf-abac/tree/main/docs/abac-specification.md
+            //   See project https://github.com/National-Node-Net/rdf-abac/tree/main/docs/abac-specification.md
             //   See ?? for the network API.
             HttpResponse<InputStream> response = execute(httpClient, request);
             InputStream in = response.body();
