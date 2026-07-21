@@ -10,7 +10,7 @@ This repository contributes to the development of **secure, scalable, and intero
 
 This repository is one of several open-source components that underpin NDTP’s **Integration Architecture (IA)**—a framework designed to allow organisations to manage and exchange data securely while maintaining control over their own information. The IA is actively deployed and tested across multiple sectors, ensuring its adaptability and alignment with real-world needs. 
 
-For a complete overview of the Integration Architecture (IA) project, please see the [Integration Architecture Documentation](https://github.com/National-Digital-Twin/integration-architecture-documentation).
+For a complete overview of the Integration Architecture (IA) project, please see the [Integration Architecture Documentation](https://github.com/National-Node-Net/integration-architecture-documentation).
 
 ## Prerequisites  
 Before using this repository, ensure you have the following dependencies installed:  
@@ -27,7 +27,7 @@ Follow these steps to get started quickly with this repository. For detailed ins
 
 ### 1. Download and Build  
 ```sh  
-git clone https://github.com/National-Digital-Twin/rdf-abac.git
+git clone https://github.com/National-Node-Net/rdf-abac.git
 cd rdf-abac
 ```
 ### 2. Run Build  
@@ -64,7 +64,7 @@ for authentication.
 and a security evaluation service to provide security verification
 to non-JVM components of the system.
 - **Key Integrations**  
-    - Enhances access control for the [secure-agent-graph](https://github.com/National-Digital-Twin/secure-agent-graph) project.  
+    - Enhances access control for the [secure-agent-graph](https://github.com/National-Node-Net/secure-agent-graph) project.  
 - **Scalability & Performance**  
     - Optimised for high-throughput environments.
 - **Modularity**  
@@ -74,6 +74,11 @@ to non-JVM components of the system.
 
 ## ABAC Documentation  
 Documentation providing further details on the individual modules is provided [here](docs/abac.md ). 
+
+## Testing Guide
+
+### Running Unit Tests
+Navigate to the root of the project and run `mvn test` to run the tests for the repository.
 
 ## Public Funding Acknowledgment  
 This repository has been developed with public funding as part of the National Digital Twin Programme (NDTP), a UK Government initiative. NDTP, alongside its partners, has invested in this work to advance open, secure, and reusable digital twin technologies for any organisation, whether from the public or private sector, irrespective of size.  

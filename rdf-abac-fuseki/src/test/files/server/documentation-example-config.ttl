@@ -44,7 +44,7 @@ PREFIX authz:   <http://ndtp.co.uk/security#>
 
 ## ABAC Dataset: Initially: no labels, no rules.
 ## Default access is applied to entries without labels ("!" no access)
-## DatasetAuthz - is a keyword (https://github.com/National-Digital-Twin/rdf-abac/blob/7f05a5b34e9340e2c7741eb0643422e161e70300/rdf-abac-lib/src/main/java/uk/gov/dbt/ndtp/jena/abac/lib/VocabAuthzDataset.java#L37)
+## DatasetAuthz - is a keyword (https://github.com/National-Node-Net/rdf-abac/blob/7f05a5b34e9340e2c7741eb0643422e161e70300/rdf-abac-lib/src/main/java/uk/gov/dbt/ndtp/jena/abac/lib/VocabAuthzDataset.java#L37)
 
 :dataset rdf:type authz:DatasetAuthz ;
     authz:dataset :inMemoryDatabase;

@@ -34,7 +34,7 @@
   <packaging>pom</packaging>
   <name>IANode ABAC</name>
   <description>An Attribute Based Access Control (ABAC) implementation for Apache Jena RDF Datasets</description>
-  <url>https://github.com/National-Digital-Twin/rdf-abac</url>
+  <url>https://github.com/National-Node-Net/rdf-abac</url>
 
   <developers>
     <developer>
@@ -58,13 +58,13 @@
   </organization>
 
   <issueManagement>
-    <url>https://github.com/National-Digital-Twin/rdf-abac/issues</url>
+    <url>https://github.com/National-Node-Net/rdf-abac/issues</url>
   </issueManagement>
 
   <scm>
-    <connection>scm:git:git@github.com:National-Digital-Twin/rdf-abac</connection>
-    <developerConnection>scm:git:git@github.com:National-Digital-Twin/rdf-abac</developerConnection>
-    <url>https://github.com/National-Digital-Twin/rdf-abac</url>
+    <connection>scm:git:git@github.com:National-Node-Net/rdf-abac</connection>
+    <developerConnection>scm:git:git@github.com:National-Node-Net/rdf-abac</developerConnection>
+    <url>https://github.com/National-Node-Net/rdf-abac</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -475,11 +475,11 @@
   <distributionManagement>
     <snapshotRepository>
       <id>github</id>
-      <url>https://maven.pkg.github.com/National-Digital-Twin/rdf-abac</url>
+      <url>https://maven.pkg.github.com/National-Node-Net/rdf-abac</url>
     </snapshotRepository>
     <repository>
       <id>github</id>
-      <url>https://maven.pkg.github.com/National-Digital-Twin/rdf-abac</url>
+      <url>https://maven.pkg.github.com/National-Node-Net/rdf-abac</url>
     </repository>
   </distributionManagement>
 
