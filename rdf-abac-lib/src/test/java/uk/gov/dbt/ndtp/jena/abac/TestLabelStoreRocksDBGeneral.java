@@ -66,6 +66,10 @@ public abstract class TestLabelStoreRocksDBGeneral extends AbstractTestLabelsSto
         }
     }
 
+    /** The RocksDB store does not enumerate its labels. */
+    @Override
+    protected boolean supportsEnumeration() { return false; }
+
     public static class ByString extends TestLabelStoreRocksDBGeneral {
         @Override
         protected StoreFmt createStoreFmt() {

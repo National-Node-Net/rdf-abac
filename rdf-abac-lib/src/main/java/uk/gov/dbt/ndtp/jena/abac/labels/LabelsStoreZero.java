@@ -27,6 +27,7 @@ package uk.gov.dbt.ndtp.jena.abac.labels;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.logging.Log;
@@ -94,5 +95,11 @@ public class LabelsStoreZero implements LabelsStore {
     @Override
     public void forEach(BiConsumer<Triple, List<String>> action) {
         throw new UnsupportedOperationException();
+    }
+
+    /** Holds no labels, so the vocabulary is empty rather than unknown. */
+    @Override
+    public Set<String> distinctLabels() {
+        return Set.of();
     }
 }
