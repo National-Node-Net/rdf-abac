@@ -102,6 +102,7 @@ public class FMod_ABAC implements FusekiModule {
             FmtLog.info(LOG, "ABAC Dataset: %s", name);
             FmtLog.info(LOG, "  Default label: %s", display(dsgz.getDefaultLabel()));
             FmtLog.info(LOG, "  Access attr  : %s", display(dsgz.getAccessAttributes()));
+            FmtLog.info(LOG, "  Label vocab  : %s", displayVocabulary(dsgz));
         }
     }
 
@@ -109,6 +110,15 @@ public class FMod_ABAC implements FusekiModule {
         if ( value != null )
             return value.toString();
         return "not set";
+    }
+
+    /** Labels seeded at startup; a store loaded by upload reports these only once data arrives. */
+    private String displayVocabulary(DatasetGraphABAC dsgz) {
+        try {
+            return dsgz.labelVocabulary().stream().sorted().toList().toString();
+        } catch (UnsupportedOperationException ex) {
+            return "not enumerable ("+ex.getMessage()+")";
+        }
     }
 
     @Override

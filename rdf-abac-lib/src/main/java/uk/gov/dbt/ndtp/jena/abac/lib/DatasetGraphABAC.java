@@ -24,9 +24,12 @@
 
 package uk.gov.dbt.ndtp.jena.abac.lib;
 
+import java.util.Set;
+
 import uk.gov.dbt.ndtp.jena.abac.ABAC;
 import uk.gov.dbt.ndtp.jena.abac.AE;
 import uk.gov.dbt.ndtp.jena.abac.attributes.AttributeExpr;
+import uk.gov.dbt.ndtp.jena.abac.labels.Labels;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStore;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStoreRocksDB;
 import org.apache.jena.query.ReadWrite;
@@ -78,6 +81,16 @@ public class DatasetGraphABAC extends DatasetGraphWrapper {
 
     public LabelsStore labelsStore() {
         return labelsStore;
+    }
+
+    /**
+     * The store's labels plus the dataset default. Prefer this over
+     * {@link LabelsStore#distinctLabels()}, which omits the default.
+     *
+     * @throws UnsupportedOperationException if the labels store cannot enumerate its labels
+     */
+    public Set<String> labelVocabulary() {
+        return Labels.vocabulary(labelsStore, defaultLabel);
     }
 
     @Override

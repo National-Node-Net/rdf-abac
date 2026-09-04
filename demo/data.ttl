@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+:alice :role      "engineer" .   # labelled  employee
+:alice :clearance "SC" .         # labelled  clearance=ordinary
+:bob   :project   "atlas" .      # labelled  clearance=secret
+:bob   :office    "Leeds" .      # unlabelled -> dataset default

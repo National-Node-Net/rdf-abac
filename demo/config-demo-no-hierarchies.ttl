@@ -1,0 +1,27 @@
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX authz:   <http://ndtp.co.uk/security#>
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "ds" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query  ; fuseki:name "query" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-r  ; fuseki:name "read"  ] ;
+    fuseki:dataset :dataset ;
+    .
+
+:dataset rdf:type authz:DatasetAuthz ;
+    authz:dataset             :datasetBase ;
+
+    ## Label store - seeded from file, so the vocabulary is known at startup.
+    authz:labels              <file:labels.ttl> ;
+    authz:tripleDefaultLabels "employee" ;
+
+    ## Policy Information Point - a real HTTP service.
+    authz:attributesURL       <env:USER_ATTRIBUTES_URL> ;
+    .
+
+:datasetBase rdf:type ja:MemoryDataset ;
+    ja:data <file:data.ttl> ;
+    .

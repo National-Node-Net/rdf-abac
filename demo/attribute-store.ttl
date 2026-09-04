@@ -1,0 +1,22 @@
+PREFIX authz: <http://ndtp.co.uk/security#>
+
+## Served by the PIP over HTTP at /users/lookup/{user}
+
+[] authz:user "alice" ;
+   authz:userAttribute "employee" ;
+   authz:userAttribute "clearance=secret" ;
+   .
+
+[] authz:user "bob" ;
+   authz:userAttribute "employee" ;
+   authz:userAttribute "clearance=ordinary" ;
+   .
+
+[] authz:user "carol" ;
+   authz:userAttribute "contractor" ;
+   .
+
+## Served at /hierarchies/lookup/{name}. Least to most restrictive.
+[] authz:hierarchy [ authz:attribute       "clearance" ;
+                     authz:attributeValues "ordinary, secret, top-secret" ] ;
+   .

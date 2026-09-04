@@ -1,0 +1,8 @@
+PREFIX authz: <http://ndtp.co.uk/security#>
+PREFIX :      <http://example/>
+
+## Patterns must be fully concrete - LabelsStoreMem rejects wildcards.
+
+[ authz:pattern ':alice :role "engineer"'   ; authz:label "employee" ] .
+[ authz:pattern ':alice :clearance "SC"'    ; authz:label "clearance=ordinary" ] .
+[ authz:pattern ':bob :project "atlas"'     ; authz:label "clearance=secret" ] .

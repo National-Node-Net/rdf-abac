@@ -33,8 +33,10 @@ import java.io.IOException;
 import uk.gov.dbt.ndtp.jena.abac.AttributeValueSet;
 import uk.gov.dbt.ndtp.jena.abac.Hierarchy;
 import uk.gov.dbt.ndtp.jena.abac.attributes.Attribute;
+import uk.gov.dbt.ndtp.jena.abac.lib.Attributes;
 import uk.gov.dbt.ndtp.jena.abac.lib.AttributesStore;
 import jakarta.servlet.ServletOutputStream;
+import org.apache.jena.riot.RDFParser;
 import jakarta.servlet.http.HttpServlet;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JSON;
@@ -62,6 +64,27 @@ public class SimpleAttributesStore {
     private static final Logger LOG = LoggerFactory.getLogger("uk.gov.dbt.ndtp.jena.MockAS");
     private static final String SERVLET_USER_LOOKUP = AttributeService.LOOKUP_USER_ATTRIBUTE_PATH;
     private static final String SERVLET_HIERARCHY_LOOKUP = AttributeService.LOOKUP_HIERARCHY_PATH;
+
+    /**
+     * Run standalone: {@code SimpleAttributesStore <attribute-store.ttl> [port]}.
+     * Prints the two endpoint URLs in the form the assembler expects and blocks.
+     */
+    public static void main(String... args) {
+        if ( args.length < 1 || args.length > 2 ) {
+            System.err.println("Usage: SimpleAttributesStore <attribute-store.ttl> [port]");
+            System.exit(1);
+        }
+        int port = (args.length == 2) ? Integer.parseInt(args[1]) : 0;
+        AttributesStore store = Attributes.buildStore(RDFParser.source(args[0]).toGraph());
+        String base = run(port, store);
+        System.out.printf("USER_ATTRIBUTES_URL=%s%s%n", base, AttributeService.LOOKUP_USER_ATTRIBUTE_TEMPLATE);
+        System.out.printf("ABAC_HIERARCHIES_URL=%s%s%n", base, AttributeService.LOOKUP_HIERARCHY_TEMPLATE);
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
     public static String run(int port, AttributesStore storage) {
         HttpServlet lookupUserAttribute = createLookupUserAttributeServlet(storage, LOG);
