@@ -27,12 +27,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>IANode ABAC and Apache Jena Fuseki Server Jar</name>
-    <artifactId>rdf-abac-fuseki-server</artifactId>
+    <artifactId>rdf-pbac-fuseki-server</artifactId>
 
     <parent>
         <groupId>uk.gov.dbt.ndtp.jena</groupId>
-        <artifactId>rdf-abac</artifactId>
-        <version>0.90.0</version>
+        <artifactId>rdf-pbac</artifactId>
+        <version>0.91.0-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -46,7 +46,7 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>uk.gov.dbt.ndtp.jena</groupId>
-            <artifactId>rdf-abac-fuseki</artifactId>
+            <artifactId>rdf-pbac-fuseki</artifactId>
             <version>${project.version}</version>
         </dependency>
 

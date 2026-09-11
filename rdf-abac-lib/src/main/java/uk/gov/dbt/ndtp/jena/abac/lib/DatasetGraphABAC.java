@@ -24,9 +24,12 @@
 
 package uk.gov.dbt.ndtp.jena.abac.lib;
 
+import java.util.Set;
+
 import uk.gov.dbt.ndtp.jena.abac.ABAC;
 import uk.gov.dbt.ndtp.jena.abac.AE;
 import uk.gov.dbt.ndtp.jena.abac.attributes.AttributeExpr;
+import uk.gov.dbt.ndtp.jena.abac.labels.Labels;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStore;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStoreRocksDB;
 import org.apache.jena.query.ReadWrite;
@@ -80,6 +83,16 @@ public class DatasetGraphABAC extends DatasetGraphWrapper {
         return labelsStore;
     }
 
+    /**
+     * The store's labels plus the dataset default. Prefer this over
+     * {@link LabelsStore#distinctLabels()}, which omits the default.
+     *
+     * @throws UnsupportedOperationException if the labels store cannot enumerate its labels
+     */
+    public Set<String> labelVocabulary() {
+        return Labels.vocabulary(labelsStore, defaultLabel);
+    }
+
     @Override
     public void close() {
         super.close();
@@ -100,6 +113,19 @@ public class DatasetGraphABAC extends DatasetGraphWrapper {
     /** Return the function for getting the user's attributes for this dataset. */
     public AttributesForUser attributesForUser() {
         return attributesStore::attributes ;
+    }
+
+    // Optional per-dataset override of the global DatasetFilterProvider (SAG-01).
+    private volatile DatasetFilterProvider filterProvider = null;
+
+    /** The per-dataset filter provider override, or {@code null} if none is set. */
+    public DatasetFilterProvider getFilterProvider() {
+        return filterProvider;
+    }
+
+    /** Register a filter provider for this specific dataset, overriding the global one. */
+    public void setFilterProvider(DatasetFilterProvider provider) {
+        this.filterProvider = provider;
     }
 
     // Propagate transactions to the labels store.

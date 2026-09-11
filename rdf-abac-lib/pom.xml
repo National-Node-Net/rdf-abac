@@ -27,15 +27,15 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>rdf-abac-lib</artifactId>
+  <artifactId>rdf-pbac-lib</artifactId>
   <packaging>jar</packaging>
   <name>IANode ABAC - Lib</name>
   <description>The RDF ABAC data model libraries and APIs</description>
 
   <parent>
     <groupId>uk.gov.dbt.ndtp.jena</groupId>
-    <artifactId>rdf-abac</artifactId>
-    <version>0.90.0</version>
+    <artifactId>rdf-pbac</artifactId>
+    <version>0.91.0-SNAPSHOT</version>
   </parent>
 
   <properties>

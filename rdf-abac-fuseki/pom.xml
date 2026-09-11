@@ -27,23 +27,23 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>rdf-abac-fuseki</artifactId>
+  <artifactId>rdf-pbac-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>IANode ABAC - Fuseki</name>
   <description>An Apache Jena Fuseki Module for integrating RDF ABAC into Fuseki servers</description>
 
   <parent>
     <groupId>uk.gov.dbt.ndtp.jena</groupId>
-    <artifactId>rdf-abac</artifactId>
-    <version>0.90.0</version>
+    <artifactId>rdf-pbac</artifactId>
+    <version>0.91.0-SNAPSHOT</version>
   </parent>
 
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
       <groupId>uk.gov.dbt.ndtp.jena</groupId>
-      <artifactId>rdf-abac-lib</artifactId>
-      <version>0.90.0</version>
+      <artifactId>rdf-pbac-lib</artifactId>
+      <version>0.91.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -66,8 +66,8 @@
     <!-- Test dependencies -->
     <dependency>
       <groupId>uk.gov.dbt.ndtp.jena</groupId>
-      <artifactId>rdf-abac-lib</artifactId>
-      <version>0.90.0</version>
+      <artifactId>rdf-pbac-lib</artifactId>
+      <version>0.91.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

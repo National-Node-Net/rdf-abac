@@ -28,13 +28,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>uk.gov.dbt.ndtp.jena</groupId>
-  <artifactId>rdf-abac</artifactId>
-  <version>0.90.0</version>
+  <artifactId>rdf-pbac</artifactId>
+  <version>0.91.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <name>IANode ABAC</name>
   <description>An Attribute Based Access Control (ABAC) implementation for Apache Jena RDF Datasets</description>
-  <url>https://github.com/National-Node-Net/rdf-abac</url>
+  <url>https://github.com/National-Node-Net/rdf-pbac</url>
 
   <developers>
     <developer>
@@ -58,13 +58,13 @@
   </organization>
 
   <issueManagement>
-    <url>https://github.com/National-Node-Net/rdf-abac/issues</url>
+    <url>https://github.com/National-Node-Net/rdf-pbac/issues</url>
   </issueManagement>
 
   <scm>
-    <connection>scm:git:git@github.com:National-Node-Net/rdf-abac</connection>
-    <developerConnection>scm:git:git@github.com:National-Node-Net/rdf-abac</developerConnection>
-    <url>https://github.com/National-Node-Net/rdf-abac</url>
+    <connection>scm:git:git@github.com:National-Node-Net/rdf-pbac</connection>
+    <developerConnection>scm:git:git@github.com:National-Node-Net/rdf-pbac</developerConnection>
+    <url>https://github.com/National-Node-Net/rdf-pbac</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -74,7 +74,7 @@
     <automatic.module.name>uk.gov.dbt.ndtp.rdfabac</automatic.module.name>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>2025-03-12T15:31:15Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-01T07:28:54Z</project.build.outputTimestamp>
     <java.version>17</java.version>
 
     <!-- Maven Plugins -->
@@ -475,11 +475,11 @@
   <distributionManagement>
     <snapshotRepository>
       <id>github</id>
-      <url>https://maven.pkg.github.com/National-Node-Net/rdf-abac</url>
+      <url>https://maven.pkg.github.com/National-Node-Net/rdf-pbac</url>
     </snapshotRepository>
     <repository>
       <id>github</id>
-      <url>https://maven.pkg.github.com/National-Node-Net/rdf-abac</url>
+      <url>https://maven.pkg.github.com/National-Node-Net/rdf-pbac</url>
     </repository>
   </distributionManagement>
 

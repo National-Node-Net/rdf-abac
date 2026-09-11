@@ -73,6 +73,16 @@ public class CxtABAC {
 
     private Track trace;
 
+    // Opaque, request-scoped slot for cross-cutting state that spans multiple calls
+    // against the same request (e.g. a cached OPA decision, so SAG-05's admission
+    // check and SAG-01's filter provider don't each make their own OPA call for the
+    // same request). Deliberately typed as Object, not a specific type, so CxtABAC
+    // doesn't need to depend on any particular caller's types.
+    private volatile Object attachment;
+
+    public Object attachment() { return attachment; }
+    public void attachment(Object value) { this.attachment = value; }
+
     public static CxtABAC context(AttributeValueSet requestAttributes,
                                   HierarchyGetter attrHierarchy,
                                   DatasetGraph dsgBase) {

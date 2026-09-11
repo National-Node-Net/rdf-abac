@@ -24,6 +24,8 @@
 
 package uk.gov.dbt.ndtp.jena.abac.fuseki;
 
+import java.net.URI;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
@@ -42,6 +44,14 @@ import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.slf4j.Logger;
+import uk.gov.dbt.ndtp.jena.abac.lib.OpaDatasetFilterProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.DecisionServiceProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.OpaDecisionServiceProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.resilience.CachingDecisionServiceProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.resilience.CircuitBreaker;
+import uk.gov.dbt.ndtp.jena.abac.opa.resilience.CircuitBreakingDecisionServiceProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.transport.HttpOpaTransport;
+import uk.gov.dbt.ndtp.jena.abac.opa.transport.OpaTransport;
 
 /**
  * Fuseki module for ABAC. This module looks for {@link DatasetGraphABAC} and ensures
@@ -63,13 +73,56 @@ public class FMod_ABAC implements FusekiModule {
 
     private final Function<HttpAction, String> getUser;
 
+    private final DecisionServiceProvider decisionService;
+
     public FMod_ABAC() {
-        this(ServerABAC.userForRequest());
+        this(ServerABAC.userForRequest(), buildDefaultDecisionService());
     }
 
-    private FMod_ABAC(Function<HttpAction, String> getUser) {
+    private FMod_ABAC(Function<HttpAction, String> getUser, DecisionServiceProvider decisionService) {
         this.getUser = getUser;
+        this.decisionService = decisionService;
         init();
+    }
+
+    /**
+     * Builds the OPA decision service chain, or returns null if the policy engine is
+     * disabled via config.
+     * <p>
+     * Defaults to DISABLED - confirmed necessary after discovering that enabling by
+     * default broke 16 of 21 existing tests in TestServerABAC, which don't have a live
+     * OPA instance available. Must be explicitly enabled where OPA is actually running.
+     */
+    private static DecisionServiceProvider buildDefaultDecisionService() {
+        boolean policyEngineEnabled = Boolean.parseBoolean(
+                System.getenv().getOrDefault("POLICY_ENGINE_ENABLED", "false"));
+
+        if ( !policyEngineEnabled ) {
+            FmtLog.info(Fuseki.configLog, "ABAC: policy engine disabled (POLICY_ENGINE_ENABLED=false)");
+            return null;
+        }
+
+        OpaTransport transport = new HttpOpaTransport(
+                URI.create(System.getenv().getOrDefault("OPA_BASE_URI", "http://localhost:8181")),
+                System.getenv().getOrDefault("OPA_POLICY_PATH", "sag/test"),
+                Duration.ofSeconds(2));
+
+        return buildDecisionServiceChain(transport);
+    }
+
+    /**
+     * Wraps a transport in the full resilience chain (Caching -> CircuitBreaking -> Opa).
+     * Extracted from {@link #buildDefaultDecisionService()} so tests can exercise this
+     * with a fake {@link OpaTransport} instead of a real network call - per Jennifer's
+     * point: we need coverage for the "enabled" path too, without a live OPA available
+     * in unit tests.
+     */
+    static DecisionServiceProvider buildDecisionServiceChain(OpaTransport transport) {
+        DecisionServiceProvider opa =
+                new OpaDecisionServiceProvider(transport, Duration.ofSeconds(2), Duration.ofSeconds(2));
+        DecisionServiceProvider circuitBreaking =
+                new CircuitBreakingDecisionServiceProvider(opa, new CircuitBreaker(5, Duration.ofSeconds(30)));
+        return new CachingDecisionServiceProvider(circuitBreaking);
     }
 
     @Override
@@ -102,6 +155,13 @@ public class FMod_ABAC implements FusekiModule {
             FmtLog.info(LOG, "ABAC Dataset: %s", name);
             FmtLog.info(LOG, "  Default label: %s", display(dsgz.getDefaultLabel()));
             FmtLog.info(LOG, "  Access attr  : %s", display(dsgz.getAccessAttributes()));
+
+            if ( decisionService != null ) {
+                dsgz.setFilterProvider(new OpaDatasetFilterProvider(decisionService));
+                FmtLog.info(LOG, "  Policy engine : enabled (OPA)");
+            } else {
+                FmtLog.info(LOG, "  Policy engine : disabled (legacy filtering)");
+            }
         }
     }
 

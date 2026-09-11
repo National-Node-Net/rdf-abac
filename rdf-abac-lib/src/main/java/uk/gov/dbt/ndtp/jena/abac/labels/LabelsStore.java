@@ -26,6 +26,7 @@ package uk.gov.dbt.ndtp.jena.abac.labels;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.graph.Graph;
@@ -99,6 +100,16 @@ public interface LabelsStore { // extends Transactional {
      * Apply BiConsumer to each entry in the labels store.
      */
     public void forEach(BiConsumer<Triple, List<String>> action);
+
+    /**
+     * The distinct labels held by this store. Excludes the dataset default label; see
+     * {@link Labels#vocabulary(LabelsStore, String)} for the complete vocabulary.
+     *
+     * @throws UnsupportedOperationException if this store cannot enumerate its labels
+     */
+    public default Set<String> distinctLabels() {
+        throw new UnsupportedOperationException(getClass().getSimpleName()+".distinctLabels");
+    }
 
     /**
      * Get labels as graph. This is a development and deployment helper; it may not

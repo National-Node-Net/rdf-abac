@@ -27,8 +27,10 @@ package uk.gov.dbt.ndtp.jena.abac.labels;
 import static org.apache.jena.sparql.util.NodeUtils.nullToAny;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
@@ -157,6 +159,15 @@ public class LabelsStoreMemPattern implements LabelsStore {
     public void forEach(BiConsumer<Triple, List<String>> action) {
         readOperation();
         tripleLabels.forEach(action);
+    }
+
+    @Override
+    public Set<String> distinctLabels() {
+        readOperation();
+        Set<String> labels = new HashSet<>();
+        tripleLabels.values().forEach(labels::addAll);
+        patternIndex.collectLabels(labels);
+        return labels;
     }
 
     @Override

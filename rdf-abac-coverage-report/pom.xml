@@ -26,31 +26,31 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rdf-abac-coverage-report</artifactId>
+    <artifactId>rdf-pbac-coverage-report</artifactId>
     <packaging>pom</packaging>
     <name>IANode ABAC - Aggregate Report</name>
     <description>Jacoco aggregate coverage report for RDF ABAC</description>
 
     <parent>
         <groupId>uk.gov.dbt.ndtp.jena</groupId>
-        <artifactId>rdf-abac</artifactId>
-        <version>0.90.0</version>
+        <artifactId>rdf-pbac</artifactId>
+        <version>0.91.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>uk.gov.dbt.ndtp.jena</groupId>
-            <artifactId>rdf-abac-lib</artifactId>
+            <artifactId>rdf-pbac-lib</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.gov.dbt.ndtp.jena</groupId>
-            <artifactId>rdf-abac-eval</artifactId>
+            <artifactId>rdf-pbac-eval</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.gov.dbt.ndtp.jena</groupId>
-            <artifactId>rdf-abac-fuseki</artifactId>
+            <artifactId>rdf-pbac-fuseki</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
