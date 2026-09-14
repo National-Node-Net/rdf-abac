@@ -115,6 +115,19 @@ public class DatasetGraphABAC extends DatasetGraphWrapper {
         return attributesStore::attributes ;
     }
 
+    // Optional per-dataset override of the global DatasetFilterProvider (SAG-01).
+    private volatile DatasetFilterProvider filterProvider = null;
+
+    /** The per-dataset filter provider override, or {@code null} if none is set. */
+    public DatasetFilterProvider getFilterProvider() {
+        return filterProvider;
+    }
+
+    /** Register a filter provider for this specific dataset, overriding the global one. */
+    public void setFilterProvider(DatasetFilterProvider provider) {
+        this.filterProvider = provider;
+    }
+
     // Propagate transactions to the labels store.
 
     private Transactional getOther() { return labelsStore.getTransactional(); }
