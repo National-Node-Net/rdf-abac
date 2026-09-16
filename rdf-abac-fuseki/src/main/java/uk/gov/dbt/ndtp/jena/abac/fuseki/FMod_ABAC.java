@@ -76,7 +76,7 @@ public class FMod_ABAC implements FusekiModule {
     private final DecisionServiceProvider decisionService;
 
     public FMod_ABAC() {
-        this(ServerABAC.userForRequest(), buildDefaultDecisionService());
+        this(ServerABAC.userForRequestFromJwt(), buildDefaultDecisionService());
     }
 
     private FMod_ABAC(Function<HttpAction, String> getUser, DecisionServiceProvider decisionService) {

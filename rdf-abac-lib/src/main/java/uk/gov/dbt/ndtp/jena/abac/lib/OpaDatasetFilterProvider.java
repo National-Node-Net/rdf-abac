@@ -18,7 +18,6 @@ import uk.gov.dbt.ndtp.jena.abac.opa.DecisionServiceProvider;
  * {@link SecurityFilterByPermittedLabels} from it instead of the legacy per-triple
  * expression evaluator.
  * <p>
- * KNOWN GAP: {@code action} and {@code datasetName} are not available at this layer today
  * - {@link DatasetGraphABAC} carries no operation name or dataset name; that information
  * only exists further up, in the Fuseki layer ({@code ABAC_Request}, via
  * {@code HttpAction}). Both are placeholders here until that's threaded through (likely
@@ -36,8 +35,7 @@ public class OpaDatasetFilterProvider implements DatasetFilterProvider {
     public DatasetGraph filterDataset(DatasetGraphABAC dsgAuthz, CxtABAC cxt) {
         Set<String> vocabulary = dsgAuthz.labelVocabulary();
 
-        // TODO: subjectId/action/organisationId/datasetName are placeholders - see class javadoc.
-        DecisionContext context = new DecisionContext(cxt, subjectIdOf(cxt), "query", null, "unknown");
+        DecisionContext context = new DecisionContext(cxt, cxt.subjectId(), cxt.action(), cxt.organisationId(), cxt.datasetName());
         DecisionResult result = decisionService.decide(context, vocabulary);
 
         LabelsGetter getter = dsgAuthz.labelsStore()::labelsForTriples;
@@ -53,7 +51,7 @@ public class OpaDatasetFilterProvider implements DatasetFilterProvider {
                 ? Labels.vocabulary(labels, defaultLabel)
                 : Set.of();
 
-        DecisionContext context = new DecisionContext(cxt, subjectIdOf(cxt), "query", null, "unknown");
+        DecisionContext context = new DecisionContext(cxt, cxt.subjectId(), cxt.action(), cxt.organisationId(), cxt.datasetName());
         DecisionResult result = decisionService.decide(context, vocabulary);
 
         if (labels == null)
@@ -66,8 +64,4 @@ public class OpaDatasetFilterProvider implements DatasetFilterProvider {
         return new DatasetGraphFilteredView(dsgBase, filter, Set.of());
     }
 
-    // TODO: placeholder - subjectId should come from verified identity, not CxtABAC directly.
-    private static String subjectIdOf(CxtABAC cxt) {
-        return "unknown-subject";
-    }
 }
