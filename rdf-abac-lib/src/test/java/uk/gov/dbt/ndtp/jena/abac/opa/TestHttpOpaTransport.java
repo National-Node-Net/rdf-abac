@@ -104,20 +104,20 @@ public class TestHttpOpaTransport {
 
     @Test
     void toJson_includesAllExpectedFields() {
-        OpaRequest request = OpaRequest.of(ctx(), Set.of("public"), Set.of("employee"));
+        OpaRequest request = OpaRequest.of(ctx(), Set.of("public"), java.util.Map.of("employee", "true"));
 
         String json = HttpOpaTransport.toJson(request);
 
         assertTrue(json.contains("\"subject_id\":\"user-1\""));
         assertTrue(json.contains("\"action\":\"read\""));
         assertTrue(json.contains("\"vocabulary\":[\"public\"]"));
-        assertTrue(json.contains("\"subject_attributes\":[\"employee\"]"));
+        assertTrue(json.contains("\"subject_attributes\":{\"employee\":\"true\"}"));
         assertTrue(json.startsWith("{\"input\":{"));
     }
 
     @Test
     void toJson_escapesQuotesAndBackslashes() {
-        OpaRequest request = OpaRequest.of(ctx(), Set.of("public"), Set.of("weird\"value\\here"));
+        OpaRequest request = OpaRequest.of(ctx(), Set.of("public"), java.util.Map.of("weird", "value\"with\\backslash"));
 
         String json = HttpOpaTransport.toJson(request);
 

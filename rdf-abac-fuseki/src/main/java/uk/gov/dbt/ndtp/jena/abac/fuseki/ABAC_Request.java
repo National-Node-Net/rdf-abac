@@ -39,6 +39,8 @@ import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.web.HttpSC;
+import uk.gov.dbt.ndtp.jena.abac.opa.DecisionServiceUnavailableException;
+import uk.gov.dbt.ndtp.jena.abac.opa.PolicyDeniedException;
 
 /**
  * Functions for any ABAC-aware operation.
@@ -101,8 +103,15 @@ public class ABAC_Request {
         if ( accessAttributes != null && ! accessAttributes.eval(cxt).getBoolean() )
             reject(action, HttpSC.FORBIDDEN_403, "Access for user = "+requestUser);
 
-        DatasetGraph dsg = ABAC.filterDataset(dsgz, cxt);
-        return dsg;
+        try {
+            return ABAC.filterDataset(dsgz, cxt);
+        } catch (DecisionServiceUnavailableException ex) {
+            reject(action, HttpSC.SERVICE_UNAVAILABLE_503, "Policy service unavailable: " + ex.getMessage());
+            return null; // unreachable - reject() does not return
+        } catch (PolicyDeniedException ex) {
+            reject(action, HttpSC.FORBIDDEN_403, "Access denied for user = " + requestUser);
+            return null; // unreachable - reject() does not return
+        }
     }
 
     /**

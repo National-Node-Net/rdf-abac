@@ -1,7 +1,9 @@
 package uk.gov.dbt.ndtp.jena.abac.opa;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,7 +40,7 @@ public class OpaDecisionServiceProvider implements DecisionServiceProvider {
         if ( vocabulary.isEmpty() )
             return DecisionResult.empty();
 
-        Set<String> subjectAttributes = extractSubjectAttributes(context.cxt());
+        Map<String, String> subjectAttributes = extractSubjectAttributes(context.cxt());
         OpaRequest request = OpaRequest.of(context, vocabulary, subjectAttributes);
 
         OpaResponse response;
@@ -65,16 +67,21 @@ public class OpaDecisionServiceProvider implements DecisionServiceProvider {
     }
 
     /**
-     * Flattens the subject's resolved attributes into the same "name" / "name=value" string
-     * form used by data labels. Confirmed: sent raw, never hierarchy-expanded - Rego
-     * does the hierarchy comparison on its side ("no decision making happens in SAG").
+     * Maps the subject's resolved attributes into a simple name -> value object, sent to
+     * OPA as a JSON object rather than a flat list of "name" / "name=value" strings.
+     * Confirmed with team: a subject never holds the same attribute name more than
+     * once (e.g. membership in a single organisation only), so a simple one-value-per-key
+     * map is sufficient - no need to support multiple values per attribute name.
+     * <p>
+     * Sent raw, never hierarchy-expanded - Rego does the hierarchy comparison on its side
+     * ("no decision making happens in SAG").
      */
-    private static Set<String> extractSubjectAttributes(CxtABAC cxt) {
-        Set<String> attributes = new HashSet<>();
+    private static Map<String, String> extractSubjectAttributes(CxtABAC cxt) {
+        Map<String, String> attributes = new HashMap<>();
         cxt.requestAttributes().attributeValues((AttributeValue av) -> {
             String name = av.attribute().name();
             String value = av.value().asString();
-            attributes.add("true".equals(value) ? name : name + "=" + value);
+            attributes.put(name, value);
         });
         return attributes;
     }

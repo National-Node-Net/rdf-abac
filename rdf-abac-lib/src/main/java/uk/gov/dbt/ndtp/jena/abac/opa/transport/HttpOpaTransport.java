@@ -139,10 +139,10 @@ public class HttpOpaTransport implements OpaTransport {
         for (String v : request.vocabulary())
             builder.value(v);
         builder.finishArray()
-                .key(FIELD_SUBJECT_ATTRIBUTES).startArray();
-        for (String v : request.subjectAttributes())
-            builder.value(v);
-        builder.finishArray()
+                .key(FIELD_SUBJECT_ATTRIBUTES).startObject();
+        for (var entry : request.subjectAttributes().entrySet())
+            builder.key(entry.getKey()).value(entry.getValue());
+        builder.finishObject()
                 .finishObject()
                 .finishObject();
 

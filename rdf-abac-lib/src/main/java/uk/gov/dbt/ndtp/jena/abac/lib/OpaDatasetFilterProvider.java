@@ -11,6 +11,7 @@ import uk.gov.dbt.ndtp.jena.abac.labels.SecurityFilterByPermittedLabels;
 import uk.gov.dbt.ndtp.jena.abac.opa.DecisionContext;
 import uk.gov.dbt.ndtp.jena.abac.opa.DecisionResult;
 import uk.gov.dbt.ndtp.jena.abac.opa.DecisionServiceProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.PolicyDeniedException;
 
 /**
  * The SAG-01 / SAG-04 connecting piece: a {@link DatasetFilterProvider} that calls an
@@ -37,6 +38,8 @@ public class OpaDatasetFilterProvider implements DatasetFilterProvider {
 
         DecisionContext context = new DecisionContext(cxt, cxt.subjectId(), cxt.action(), cxt.organisationId(), cxt.datasetName());
         DecisionResult result = decisionService.decide(context, vocabulary);
+        if ( result.isEmpty() )
+            throw new PolicyDeniedException("No permitted labels for subject = " + cxt.subjectId());
 
         LabelsGetter getter = dsgAuthz.labelsStore()::labelsForTriples;
         SecurityFilterByPermittedLabels filter =
@@ -53,6 +56,8 @@ public class OpaDatasetFilterProvider implements DatasetFilterProvider {
 
         DecisionContext context = new DecisionContext(cxt, cxt.subjectId(), cxt.action(), cxt.organisationId(), cxt.datasetName());
         DecisionResult result = decisionService.decide(context, vocabulary);
+        if ( result.isEmpty() )
+            throw new PolicyDeniedException("No permitted labels for subject = " + cxt.subjectId());
 
         if (labels == null)
             return new DatasetGraphFilteredView(dsgBase, null, Set.of());

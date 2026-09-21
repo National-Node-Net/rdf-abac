@@ -2,6 +2,7 @@ package uk.gov.dbt.ndtp.jena.abac.opa.transport;
 
 import uk.gov.dbt.ndtp.jena.abac.opa.DecisionContext;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,31 +25,49 @@ public final class OpaRequest {
     private final String organisationId;
     private final String datasetName;
     private final Set<String> vocabulary;
-    private final Set<String> subjectAttributes;
+    private final Map<String, String> subjectAttributes;
 
     private OpaRequest(String subjectId, String action, String organisationId, String datasetName,
-                       Set<String> vocabulary, Set<String> subjectAttributes) {
+                       Set<String> vocabulary, Map<String, String> subjectAttributes) {
         this.subjectId = subjectId;
         this.action = action;
         this.organisationId = organisationId;
         this.datasetName = datasetName;
         this.vocabulary = Set.copyOf(vocabulary);
-        this.subjectAttributes = Set.copyOf(subjectAttributes);
+        this.subjectAttributes = Map.copyOf(subjectAttributes);
     }
 
     /**
-     * {@code subjectAttributes} must be the requester's raw, resolved attribute set -
-     * confirmed: SAG sends all attributes as-is, never hierarchy-expanded.
+     * {@code subjectAttributes} must be the requester's raw, resolved attribute set, one
+     * value per attribute name - confirmed with team that a subject never holds the
+     * same attribute name more than once (e.g. single organisation membership only).
      */
-    public static OpaRequest of(DecisionContext context, Set<String> vocabulary, Set<String> subjectAttributes) {
+    public static OpaRequest of(DecisionContext context, Set<String> vocabulary, Map<String, String> subjectAttributes) {
         return new OpaRequest(context.subjectId(), context.action(), context.organisationId(),
                 context.datasetName(), vocabulary, subjectAttributes);
     }
 
-    public String subjectId() { return subjectId; }
-    public String action() { return action; }
-    public String organisationId() { return organisationId; }
-    public String datasetName() { return datasetName; }
-    public Set<String> vocabulary() { return vocabulary; }
-    public Set<String> subjectAttributes() { return subjectAttributes; }
+    public String subjectId() {
+        return subjectId;
+    }
+
+    public String action() {
+        return action;
+    }
+
+    public String organisationId() {
+        return organisationId;
+    }
+
+    public String datasetName() {
+        return datasetName;
+    }
+
+    public Set<String> vocabulary() {
+        return vocabulary;
+    }
+
+    public Map<String, String> subjectAttributes() {
+        return subjectAttributes;
+    }
 }

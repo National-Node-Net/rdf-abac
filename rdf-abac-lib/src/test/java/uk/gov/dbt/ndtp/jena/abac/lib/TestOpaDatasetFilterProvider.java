@@ -13,11 +13,16 @@ import uk.gov.dbt.ndtp.jena.abac.labels.Labels;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStore;
 import uk.gov.dbt.ndtp.jena.abac.opa.DecisionResult;
 import uk.gov.dbt.ndtp.jena.abac.opa.DecisionServiceProvider;
+import uk.gov.dbt.ndtp.jena.abac.opa.PolicyDeniedException;
 
 public class TestOpaDatasetFilterProvider {
 
     private static CxtABAC ctx(DatasetGraph dsg) {
-        return CxtABAC.context(AttributeValueSet.of(java.util.List.of()), Hierarchy.noHierarchy, dsg);
+        CxtABAC cxt = CxtABAC.context(AttributeValueSet.of(java.util.List.of()), Hierarchy.noHierarchy, dsg);
+        cxt.subjectId("test-user");
+        cxt.action("read");
+        cxt.datasetName("test-dataset");
+        return cxt;
     }
 
     private static DatasetGraphABAC authzDataset() {
@@ -47,5 +52,26 @@ public class TestOpaDatasetFilterProvider {
         DatasetGraph result = provider.filterDataset(base, store, "dflt", ctx(base));
 
         assertNotNull(result);
+    }
+
+    @Test
+    void filterDataset_emptyPermittedLabels_throwsPolicyDenied() {
+        DecisionServiceProvider stub = (context, vocabulary) -> DecisionResult.empty();
+        OpaDatasetFilterProvider provider = new OpaDatasetFilterProvider(stub);
+        DatasetGraphABAC dsgz = authzDataset();
+
+        assertThrows(PolicyDeniedException.class,
+                () -> provider.filterDataset(dsgz, ctx(dsgz.getData())));
+    }
+
+    @Test
+    void filterDataset_rawParts_emptyPermittedLabels_throwsPolicyDenied() {
+        DecisionServiceProvider stub = (context, vocabulary) -> DecisionResult.empty();
+        OpaDatasetFilterProvider provider = new OpaDatasetFilterProvider(stub);
+        LabelsStore store = Labels.createLabelsStoreMem();
+        DatasetGraph base = DatasetGraphFactory.createTxnMem();
+
+        assertThrows(PolicyDeniedException.class,
+                () -> provider.filterDataset(base, store, "dflt", ctx(base)));
     }
 }
