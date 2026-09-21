@@ -29,7 +29,7 @@
 
   <groupId>uk.gov.dbt.ndtp.jena</groupId>
   <artifactId>rdf-pbac</artifactId>
-  <version>0.91.0-SNAPSHOT</version>
+  <version>0.92.0</version>
 
   <packaging>pom</packaging>
   <name>IANode ABAC</name>
@@ -74,7 +74,7 @@
     <automatic.module.name>uk.gov.dbt.ndtp.rdfabac</automatic.module.name>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>2026-09-01T07:28:54Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-21T14:51:58Z</project.build.outputTimestamp>
     <java.version>17</java.version>
 
     <!-- Maven Plugins -->
