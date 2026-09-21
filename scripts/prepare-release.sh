@@ -119,7 +119,7 @@ This PR was generated from script \`/scripts/prepare-release.sh\`.
 
 4. Open the release PR into \`main\`:
 
-       gh pr create --base main --head release/${version} --title "Release ${version}" --body "Release ${version}."
+       gh pr create --base main --head release/${version} --title "Release ${version}" --body "Release ${version}." --repo "National-Node-Net/rdf-pbac"
 
 5. Review and merge the \`release/${version}\` PR into \`main\`.
 
