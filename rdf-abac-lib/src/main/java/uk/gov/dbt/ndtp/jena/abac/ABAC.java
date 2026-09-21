@@ -43,12 +43,8 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
-import uk.gov.dbt.ndtp.jena.abac.lib.AttributesStore;
-import uk.gov.dbt.ndtp.jena.abac.lib.CxtABAC;
-import uk.gov.dbt.ndtp.jena.abac.lib.DatasetGraphABAC;
-import uk.gov.dbt.ndtp.jena.abac.lib.HierarchyGetter;
-import uk.gov.dbt.ndtp.jena.abac.lib.QuadFilter;
+
+import uk.gov.dbt.ndtp.jena.abac.lib.*;
 
 /**
  * Programmatic API to the Attribute-Based Access Control functionality.
@@ -132,7 +128,7 @@ public final class ABAC {
      * @see #requestDataset
      */
     public static DatasetGraph filterDataset(DatasetGraphABAC dsgAuthz, CxtABAC cxt) {
-        return filterDataset(dsgAuthz.getData(), dsgAuthz.labelsStore(), dsgAuthz.getDefaultLabel(), cxt);
+        return ABACRequest.resolveProvider(dsgAuthz).filterDataset(dsgAuthz, cxt);
     }
 
     /**
@@ -142,14 +138,13 @@ public final class ABAC {
      * ({@link LabelsStoreZero}). "No store" mean the label filter isn't even
      * incorporated into decisions whereas an empty store may have a default.
      * <p>The DatasetGraph is the data storage dataset.
+     * <p>
+     * No {@link DatasetGraphABAC} is available here, so only the global provider
+     * applies (no per-dataset override lookup possible) - matches upstream's
+     * equivalent call site.
      */
     public static DatasetGraph filterDataset(DatasetGraph dsgBase, LabelsStore labels, String defaultLabel, CxtABAC cxt) {
-        QuadFilter filter = null;
-        if (labels != null) {
-            LabelsGetter getter = labels::labelsForTriples;
-            filter = Labels.securityFilterByLabel(dsgBase, getter, defaultLabel, cxt);
-        }
-        return new DatasetGraphFilteredView(dsgBase, filter, Set.of());
+        return ABACRequest.getFilterProvider().filterDataset(dsgBase, labels, defaultLabel, cxt);
     }
 
     /**

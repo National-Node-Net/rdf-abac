@@ -39,11 +39,22 @@ import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.web.HttpSC;
+import uk.gov.dbt.ndtp.jena.abac.opa.DecisionServiceUnavailableException;
+import uk.gov.dbt.ndtp.jena.abac.opa.PolicyDeniedException;
 
 /**
  * Functions for any ABAC-aware operation.
  */
 public class ABAC_Request {
+
+
+    /**
+     * Attribute name used by the PIP to carry a user's organisation, per the flat
+     * attribute-string convention (see AE.parseExpr) - confirmed against ianode-access
+     * swagger.json: the "deployed_organisation" user attribute is serialised into this
+     * label format.
+     */
+    private static final String ATTR_PERMITTED_ORGANISATIONS = "permitted_organisations";
 
     /**
      * Provide the dataset suitable for this operation.
@@ -72,6 +83,17 @@ public class ABAC_Request {
         HierarchyGetter function = (a)->dsgz.attributesStore().getHierarchy(a);
 
         CxtABAC cxt = CxtABAC.context(attributes, function, dsgz);
+        cxt.subjectId(requestUser);
+        cxt.datasetName(action.getDatasetName());
+        cxt.action(action.getEndpoint() != null && action.getEndpoint().getOperation() != null
+                ? action.getEndpoint().getOperation().getName()
+                : "unknown");
+        cxt.organisationId(extractOrganisationId(attributes));
+        // TODO: fail-closed for missing organisationId (confirmed 403 by Jennifer) - NOT YET
+        // ENABLED. Enforcing this broke 18 existing tests, whose test fixtures don't carry an
+        // organisation attribute at all. Needs either: (a) test fixtures updated to include
+        // permitted_organisations, or (b) confirmation this should only apply once SAG-03 is
+        // fully wired end-to-end, not to every existing ABAC dataset unconditionally.
         FmtLog.info(action.log, "[%d] User %s : %s", action.id, requestUser, attributes);
 
         if ( Lib.equalsIgnoreCase("true", action.getRequestParameter("debug")) )
@@ -81,8 +103,15 @@ public class ABAC_Request {
         if ( accessAttributes != null && ! accessAttributes.eval(cxt).getBoolean() )
             reject(action, HttpSC.FORBIDDEN_403, "Access for user = "+requestUser);
 
-        DatasetGraph dsg = ABAC.filterDataset(dsgz, cxt);
-        return dsg;
+        try {
+            return ABAC.filterDataset(dsgz, cxt);
+        } catch (DecisionServiceUnavailableException ex) {
+            reject(action, HttpSC.SERVICE_UNAVAILABLE_503, "Policy service unavailable: " + ex.getMessage());
+            return null; // unreachable - reject() does not return
+        } catch (PolicyDeniedException ex) {
+            reject(action, HttpSC.FORBIDDEN_403, "Access denied for user = " + requestUser);
+            return null; // unreachable - reject() does not return
+        }
     }
 
     /**
@@ -93,5 +122,14 @@ public class ABAC_Request {
         // Does not return.
         FmtLog.warn(action.log, "[%d] Rejected: %s", action.id, errorMessage);
         ServletOps.error(statusCode, errorMessage);
+    }
+
+    static String extractOrganisationId(AttributeValueSet attributes) {
+        String[] found = new String[1];
+        attributes.attributeValues(av -> {
+            if ( ATTR_PERMITTED_ORGANISATIONS.equals(av.attribute().name()) )
+                found[0] = av.value().asString();
+        });
+        return found[0];
     }
 }

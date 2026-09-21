@@ -17,6 +17,13 @@ This project follows **Semantic Versioning (SemVer)** ([semver.org](https://semv
 
 ---
 
+## 0.92.0 – 2026-09-21
+
+### Changed
+- New functionality to introduce policy awareness and integration with OPA for data filtering.
+
+---
+
 ## 0.90.1 – 2026-07-16
 
 ### Changed
