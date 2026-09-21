@@ -25,7 +25,10 @@
 package uk.gov.dbt.ndtp.jena.abac.labels;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import uk.gov.dbt.ndtp.jena.abac.lib.AuthzException;
@@ -53,6 +56,20 @@ public class Labels {
 
     public static LabelsStore emptyStore() {
         return noLabelsStore;
+    }
+
+    /**
+     * The store's labels plus the dataset default. Data ingested at the default is stored
+     * unlabelled, so the store alone is incomplete. A null default contributes nothing.
+     *
+     * @throws UnsupportedOperationException if the store cannot enumerate its labels
+     */
+    public static Set<String> vocabulary(LabelsStore store, String defaultLabel) {
+        Objects.requireNonNull(store, "LabelsStore");
+        Set<String> vocabulary = new HashSet<>(store.distinctLabels());
+        if ( defaultLabel != null )
+            vocabulary.add(defaultLabel);
+        return vocabulary;
     }
 
     /**

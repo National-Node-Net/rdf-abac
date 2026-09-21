@@ -34,6 +34,9 @@ import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.web.HttpNames;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import uk.gov.dbt.ndtp.servlet.auth.jwt.JwtServletConstants;
 
 public class ServerABAC {
 
@@ -70,6 +73,34 @@ public class ServerABAC {
             String ruser = null;
             return ruser;
         };
+    }
+
+    /**
+     * Given a Http servlet request, find the user from a verified JWT if present,
+     * falling back to the legacy "Bearer user:NAME" scheme otherwise.
+     * <p>
+     * Confirmed empirically: HttpServletRequest.getRemoteUser() is NOT set by the JWT
+     * filter (JwtAuthFilter) after verification - the verified token is left as a
+     * request attribute instead (JwtServletConstants.REQUEST_ATTRIBUTE_RAW_JWT). This
+     * method reads that attribute directly, extracting the "email" claim as subject.
+     */
+    public static Function<HttpAction, String> userForRequestFromJwt() {
+        return action -> {
+            String jwtUser = userFromJwtAttribute(action);
+            if ( jwtUser != null )
+                return jwtUser;
+            return userForRequest().apply(action);
+        };
+    }
+
+    private static String userFromJwtAttribute(HttpAction action) {
+        Object raw = action.getRequest().getAttribute(JwtServletConstants.REQUEST_ATTRIBUTE_RAW_JWT);
+        if ( ! (raw instanceof Jws<?> jws) )
+            return null;
+        Object payload = jws.getPayload();
+        if ( ! (payload instanceof Claims claims) )
+            return null;
+        return claims.get("email", String.class);
     }
 
     private static String userFromHTTP(HttpAction action) {

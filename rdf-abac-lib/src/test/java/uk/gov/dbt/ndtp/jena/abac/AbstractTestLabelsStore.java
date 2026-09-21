@@ -30,8 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import uk.gov.dbt.ndtp.jena.abac.labels.L;
 import uk.gov.dbt.ndtp.jena.abac.labels.Labels;
@@ -191,5 +194,58 @@ public abstract class AbstractTestLabelsStore {
         labelsStore.add(hugeTriple, "hugeLabel");
         List<String> x = labelsStore.labelsForTriples(hugeTriple);
         assertEquals(List.of("hugeLabel"), x);
+    }
+
+    protected boolean supportsEnumeration() { return true; }
+
+    @Test public void distinctLabels_unsupported_throws() {
+        assumeFalse(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        assertThrows(UnsupportedOperationException.class, ()->labelsStore.distinctLabels());
+    }
+
+    @Test public void distinctLabels_empty() {
+        assumeTrue(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        assertEquals(Set.of(), labelsStore.distinctLabels());
+    }
+
+    @Test public void distinctLabels_oneLabel() {
+        assumeTrue(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        labelsStore.add(triple1, "label1");
+        assertEquals(Set.of("label1"), labelsStore.distinctLabels());
+    }
+
+    @Test public void distinctLabels_sharedLabel_deduplicated() {
+        assumeTrue(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        labelsStore.add(triple1, "shared");
+        labelsStore.add(triple2, "shared");
+        assertEquals(Set.of("shared"), labelsStore.distinctLabels());
+    }
+
+    @Test public void distinctLabels_severalLabels() {
+        assumeTrue(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        labelsStore.add(triple1, "label1");
+        labelsStore.add(triple2, "label2");
+        assertEquals(Set.of("label1", "label2"), labelsStore.distinctLabels());
+    }
+
+    @Test public void distinctLabels_multipleLabelsOnOneTriple() {
+        assumeTrue(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        labelsStore.add(triple1, List.of("label1", "label2"));
+        assertEquals(Set.of("label1", "label2"), labelsStore.distinctLabels());
+    }
+
+    @Test public void distinctLabels_afterRemove() {
+        assumeTrue(supportsEnumeration());
+        labelsStore = createLabelsStore();
+        labelsStore.add(triple1, "label1");
+        labelsStore.add(triple2, "label2");
+        labelsStore.remove(triple1);
+        assertEquals(Set.of("label2"), labelsStore.distinctLabels());
     }
 }

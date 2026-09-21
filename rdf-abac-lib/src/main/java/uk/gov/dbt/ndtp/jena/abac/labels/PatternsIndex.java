@@ -26,6 +26,7 @@ package uk.gov.dbt.ndtp.jena.abac.labels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.lib.Pair;
@@ -101,6 +102,10 @@ public class PatternsIndex {
 
         public boolean isEmpty() {
             return triplePatterns.isEmpty();
+        }
+
+        void collectLabels(Set<String> acc) {
+            triplePatterns.forEach(pair->acc.addAll(pair.getRight()));
         }
     }
 
@@ -182,5 +187,13 @@ public class PatternsIndex {
 
     public boolean isEmpty() {
         return S.isEmpty() && SP.isEmpty() && P.isEmpty() && ANY.isEmpty();
+    }
+
+    /** Add every label in this index to {@code acc}, covering S, SP, P and ANY. */
+    public void collectLabels(Set<String> acc) {
+        S.collectLabels(acc);
+        SP.collectLabels(acc);
+        P.collectLabels(acc);
+        ANY.collectLabels(acc);
     }
 }

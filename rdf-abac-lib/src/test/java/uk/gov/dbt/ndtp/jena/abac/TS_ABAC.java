@@ -66,6 +66,7 @@ import uk.gov.dbt.ndtp.jena.abac.lib.TestCtxABAC;
     , TestAssemblerABAC.class
 
     , TestLabelsStoreMem.class
+    , TestLabelsVocabulary.class
     , TestAE.class
     , TestABAC.class
     , TestCtxABAC.class
