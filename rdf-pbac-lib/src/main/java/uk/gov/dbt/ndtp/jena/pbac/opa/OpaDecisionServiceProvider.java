@@ -1,0 +1,88 @@
+package uk.gov.dbt.ndtp.jena.pbac.opa;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import uk.gov.dbt.ndtp.jena.pbac.attributes.AttributeValue;
+import uk.gov.dbt.ndtp.jena.pbac.lib.CxtPBAC;
+import uk.gov.dbt.ndtp.jena.pbac.opa.transport.*;
+
+/**
+ * OPA-backed {@link DecisionServiceProvider}. Everything except the wire format (owned by
+ * {@link OpaTransport}) is implemented here: explicit connect/read timeouts (AC8), the
+ * fail-closed mapping on error (AC9), and the defensive intersection against the submitted
+ * vocabulary so a label OPA didn't see can never come back permitted (AC7).
+ * <p>
+ * Confirmed: SAG resolves and sends the subject's full attribute set to OPA -
+ * see {@link #extractSubjectAttributes} - rather than OPA calling back to the PIP.
+ */
+public class OpaDecisionServiceProvider implements DecisionServiceProvider {
+
+    private final OpaTransport transport;
+    private final Duration connectTimeout;
+    private final Duration readTimeout;
+
+    public OpaDecisionServiceProvider(OpaTransport transport, Duration connectTimeout, Duration readTimeout) {
+        this.transport = Objects.requireNonNull(transport, "transport");
+        this.connectTimeout = Objects.requireNonNull(connectTimeout, "connectTimeout");
+        this.readTimeout = Objects.requireNonNull(readTimeout, "readTimeout");
+    }
+
+    @Override
+    public DecisionResult decide(DecisionContext context, Set<String> vocabulary) {
+        Objects.requireNonNull(context, "context");
+        Objects.requireNonNull(vocabulary, "vocabulary");
+
+        if ( vocabulary.isEmpty() )
+            return DecisionResult.empty();
+
+        Map<String, String> subjectAttributes = extractSubjectAttributes(context.cxt());
+        OpaRequest request = OpaRequest.of(context, vocabulary, subjectAttributes);
+
+        OpaResponse response;
+        try {
+            response = transport.call(request, connectTimeout, readTimeout);
+        } catch (OpaConnectException e) {
+            throw new DecisionServiceUnavailableException("OPA unreachable", e);
+        } catch (OpaTransportException e) {
+            // timeout / HTTP error / malformed body all map to 503,
+            // not to an empty permitted set. Only a genuine HTTP 200 with an empty
+            // permitted set is a 403. Matches opa-pov's OpaPolicyDecisionPoint behaviour too
+            // (non-2xx and undefined-rule responses both raise, never silently deny).
+            throw new DecisionServiceUnavailableException("OPA transport failure", e);
+        }
+
+        if ( response == null || response.permittedLabels() == null ) {
+            throw new DecisionServiceUnavailableException("OPA returned a malformed response");
+        }
+
+        Set<String> permitted = new HashSet<>(response.permittedLabels());
+        permitted.retainAll(vocabulary);
+
+        return new DecisionResult(permitted, response.auditMetadata());
+    }
+
+    /**
+     * Maps the subject's resolved attributes into a simple name -> value object, sent to
+     * OPA as a JSON object rather than a flat list of "name" / "name=value" strings.
+     * Confirmed with team: a subject never holds the same attribute name more than
+     * once (e.g. membership in a single organisation only), so a simple one-value-per-key
+     * map is sufficient - no need to support multiple values per attribute name.
+     * <p>
+     * Sent raw, never hierarchy-expanded - Rego does the hierarchy comparison on its side
+     * ("no decision making happens in SAG").
+     */
+    private static Map<String, String> extractSubjectAttributes(CxtPBAC cxt) {
+        Map<String, String> attributes = new HashMap<>();
+        cxt.requestAttributes().attributeValues((AttributeValue av) -> {
+            String name = av.attribute().name();
+            String value = av.value().asString();
+            attributes.put(name, value);
+        });
+        return attributes;
+    }
+}

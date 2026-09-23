@@ -24,7 +24,7 @@
 
 # -*- mode: shell-script; -*-
 # Source me
-# RDF ABAC
+# RDF PBAC
 
 ## ------------------------
 ## This will override the setting in POM

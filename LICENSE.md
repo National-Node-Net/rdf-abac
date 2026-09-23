@@ -1,6 +1,6 @@
 # License  
 
-**Repository:** `rdf-abac`  
+**Repository:** `rdf-pbac`  
 **Description:** `Defines the licensing terms for the source code in this repository.`  
 <!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 

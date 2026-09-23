@@ -1,7 +1,7 @@
 # README  
 
-**Repository:** `rdf-abac`  
-**Description:** `This repository provides an Apache Jena plugin to enable fine-grained access control (ABAC). Used by secure-agent-graph.`
+**Repository:** `rdf-pbac`  
+**Description:** `This repository provides an Apache Jena plugin to enable fine-grained, policy-based access control (PBAC) of RDF data. Used by secure-agent-graph.`
 
 <!-- SPDX-License-Identifier: Apache-2.0 AND OGL-UK-3.0 -->
 
@@ -27,15 +27,15 @@ Follow these steps to get started quickly with this repository. For detailed ins
 
 ### 1. Download and Build  
 ```sh  
-git clone https://github.com/National-Node-Net/rdf-abac.git
-cd rdf-abac
+git clone https://github.com/National-Node-Net/rdf-pbac.git
+cd rdf-pbac
 ```
 ### 2. Run Build  
 ```sh  
 mvn clean install
 ```
 
-which creates the `rdf-abac-fmod` module for Fuseki.
+which creates the `rdf-pbac-fuseki` module for Fuseki.
 ### 3. Usage
 
 To use the library directly in your project:
@@ -44,7 +44,7 @@ To use the library directly in your project:
 
     <dependency>
       <groupId>uk.gov.dbt.ndtp.jena</groupId>
-      <artifactId>rdf-abac-lib</artifactId>
+      <artifactId>rdf-pbac-lib</artifactId>
       <version>VERSION</version>
     </dependency>
 
@@ -53,27 +53,45 @@ To use the library directly in your project:
 This project uses the Apache Jena Fuseki Main server and is configured with a
 Fuseki configuration file.
 
-See [documentation](docs/abac-fuseki-server.md) for details on how to run the library within a local Fuseki Server.
+See [documentation](docs/pbac-fuseki-server.md) for details on how to run the library within a local Fuseki Server.
 
 See "[Configuring Fuseki](https://jena.apache.org/documentation/fuseki2/fuseki-configuration.html)"
 for authentication.
 
 ## Features
 - **Key Functionality**  
-   - RDF ABAC consists of a ABAC security engine, an extension module for [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/),
+   - RDF PBAC consists of a PBAC security engine, an extension module for [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/),
 and a security evaluation service to provide security verification
 to non-JVM components of the system.
+   - Every triple carries a security label. Which labels a request may see is decided by a
+policy engine ([Open Policy Agent](https://www.openpolicyagent.org/)) or, when no policy engine is
+configured, by evaluating each label as an attribute expression against the user's attributes.
 - **Key Integrations**  
     - Enhances access control for the [secure-agent-graph](https://github.com/National-Node-Net/secure-agent-graph) project.  
 - **Scalability & Performance**  
     - Optimised for high-throughput environments.
 - **Modularity**  
     - Designed as a modular component of NDTP’s Integration Architecture (IA).  
-    - Includes the `rdf-abac-fmod` module for Fuseki.  
+    - Includes the `rdf-pbac-fuseki` module for Fuseki.  
     - Usable as a library in other projects via Maven dependency management.  
 
-## ABAC Documentation  
-Documentation providing further details on the individual modules is provided [here](docs/abac.md ). 
+## Modules
+
+| Module | Description |
+|---|---|
+| `rdf-pbac-lib` | The PBAC security engine: labels, label stores, attribute expressions and policy decisions |
+| `rdf-pbac-fuseki` | Fuseki module that applies PBAC security to Fuseki datasets |
+| `rdf-pbac-fuseki-server` | Runnable Fuseki server jar with PBAC included |
+| `rdf-pbac-eval` | Standalone service for evaluating attribute label expressions |
+| `rdf-pbac-coverage-report` | Aggregate test coverage report |
+
+## PBAC Documentation  
+Documentation providing further details on the individual modules is provided [here](docs/pbac.md ). 
+See [Policy Engine (OPA)](docs/pbac-policy-engine.md) for how policy decisions are configured.
+
+This repository was forked from [rdf-abac](https://github.com/National-Node-Net/rdf-abac). Java packages
+have moved from `uk.gov.dbt.ndtp.jena.abac` to `uk.gov.dbt.ndtp.jena.pbac`, and classes named `*ABAC*`
+are now named `*PBAC*` (for example `DatasetGraphABAC` is now `DatasetGraphPBAC`).
 
 ## Testing Guide
 

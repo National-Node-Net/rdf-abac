@@ -1,6 +1,6 @@
 # Code of Conduct
 
-**Repository:** `rdf-abac`  
+**Repository:** `rdf-pbac`  
 **Description:** `Defines expected behaviors, rules, and the enforcement process to ensure professional engagement.`  
 <!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 

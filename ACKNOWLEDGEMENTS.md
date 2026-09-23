@@ -1,6 +1,6 @@
 # Acknowledgements
 
-**Repository:** `rdf-abac`  
+**Repository:** `rdf-pbac`  
 **Description:** `Recognises suppliers, partner organisations, and other contributors to the repository’s development.`  
 <!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 
@@ -15,7 +15,7 @@ Over time, the following organisations have provided technical expertise, develo
 We are grateful for the collaboration that has helped shape this repository.
 
 ## Individual contributions
-For a list of individual contributors who have made direct commits to this repository, see GitHub’s auto-generated contributor insights: [Contributors](https://github.com/National-Node-Net/rdf-abac/graphs/contributors).
+For a list of individual contributors who have made direct commits to this repository, see GitHub’s auto-generated contributor insights: [Contributors](https://github.com/National-Node-Net/rdf-pbac/graphs/contributors).
 
 ---  
 

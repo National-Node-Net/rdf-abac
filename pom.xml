@@ -32,8 +32,8 @@
   <version>0.92.0</version>
 
   <packaging>pom</packaging>
-  <name>IANode ABAC</name>
-  <description>An Attribute Based Access Control (ABAC) implementation for Apache Jena RDF Datasets</description>
+  <name>IANode PBAC</name>
+  <description>A Policy-Based Access Control (PBAC) implementation for Apache Jena RDF Datasets</description>
   <url>https://github.com/National-Node-Net/rdf-pbac</url>
 
   <developers>
@@ -71,7 +71,7 @@
   <properties>
     <!-- Build properties -->
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-    <automatic.module.name>uk.gov.dbt.ndtp.rdfabac</automatic.module.name>
+    <automatic.module.name>uk.gov.dbt.ndtp.rdfpbac</automatic.module.name>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputTimestamp>2026-09-21T14:51:58Z</project.build.outputTimestamp>
@@ -114,11 +114,11 @@
   </properties>
 
   <modules>
-    <module>rdf-abac-lib</module>
-    <module>rdf-abac-fuseki</module>
-    <module>rdf-abac-fuseki-server</module>
-    <module>rdf-abac-eval</module>
-    <module>rdf-abac-coverage-report</module>
+    <module>rdf-pbac-lib</module>
+    <module>rdf-pbac-fuseki</module>
+    <module>rdf-pbac-fuseki-server</module>
+    <module>rdf-pbac-eval</module>
+    <module>rdf-pbac-coverage-report</module>
   </modules>
 
   <dependencyManagement>
@@ -461,7 +461,7 @@
             <version>${plugin.surefire}</version>
             <configuration>
               <excludes>
-                <exclude>**/TS_ABAC_BulkTestSuite.java</exclude>
+                <exclude>**/TS_PBAC_BulkTestSuite.java</exclude>
                 <exclude>**/TS_LabelStoreRocksDB.java</exclude>
               </excludes>
               <argLine>@{jacocoArgLine} -XX:+EnableDynamicAgentLoading</argLine>

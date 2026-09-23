@@ -1,14 +1,15 @@
 # NOTICE
 
-**Repository:** `rdf-abac`  
+**Repository:** `rdf-pbac`  
 **Description:** `Attribution and legal notices related to the use of this repository, including acknowledgments of external contributions.`  
 <!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 
 This product includes code originally developed as rdf-abac
 by Telicent.
 
-This product is now maintained and further developed as rdf-abac
-by the National Digital Twin Programme.
+This product is now maintained and further developed as rdf-pbac
+by the National Digital Twin Programme, which extends rdf-abac with
+policy-based access control (PBAC).
 
 Copyright (c) 2024 Telicent Ltd.    
 © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme and is legally attributed to the Department for Business and Trade (UK) as the governing entity.

@@ -1,6 +1,6 @@
 # Changelog
 
-**Repository:** `rdf-abac`  
+**Repository:** `rdf-pbac`  
 **Description:** `Tracks all notable changes, version history, and roadmap toward 1.0.0 following Semantic Versioning.`  
 <!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 
@@ -14,6 +14,23 @@ This project follows **Semantic Versioning (SemVer)** ([semver.org](https://semv
 - **PATCH** (`0.0.X`) – Backward-compatible bug fixes, security updates, or minor corrections.
 - **Pre-release versions** – Use suffixes such as `-alpha`, `-beta`, `-rc.1` (e.g., `2.1.0-beta.1`).
 - **Build metadata** – If needed, use `+build` (e.g., `2.1.0+20250314`).
+
+---
+
+## Unreleased
+
+### Changed
+- Renamed the project from RDF ABAC to RDF PBAC to reflect the policy-based access control approach.
+- **Breaking:** Java packages moved from `uk.gov.dbt.ndtp.jena.abac` to `uk.gov.dbt.ndtp.jena.pbac`,
+  and classes named `*ABAC*` renamed to `*PBAC*` (e.g. `DatasetGraphABAC` → `DatasetGraphPBAC`,
+  `FMod_ABAC` → `FMod_PBAC`, `SysABAC` → `SysPBAC`). The server jar main class is now `pbac.Cmd`.
+- Module directories renamed from `rdf-abac-*` to `rdf-pbac-*`; documentation renamed from `docs/abac-*.md` to `docs/pbac-*.md`.
+- Logger names moved to `uk.gov.dbt.ndtp.jena.pbac`; the debug context symbol is now `pbac:debug`.
+- Unchanged: Maven coordinates (already `rdf-pbac-*`), the `authz:` vocabulary, RocksDB label store on-disk format,
+  and the attribute expression language.
+
+### Added
+- Documentation for the OPA policy engine integration (`docs/pbac-policy-engine.md`).
 
 ---
 

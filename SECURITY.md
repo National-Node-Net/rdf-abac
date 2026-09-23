@@ -1,6 +1,6 @@
 # Security Policy
 
-**Repository:** `rdf-abac`  
+**Repository:** `rdf-pbac`  
 **Description:** `Details the responsible disclosure process for security vulnerabilities.`  
 <!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 

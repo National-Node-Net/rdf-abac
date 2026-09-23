@@ -87,14 +87,14 @@ if [[ "${edit_changelog}" == true ]]; then
   "${editor_command[@]}" CHANGELOG.md
 fi
 
-if git diff --quiet -- pom.xml rdf-abac-lib/pom.xml rdf-abac-fuseki/pom.xml rdf-abac-fuseki-server/pom.xml rdf-abac-eval/pom.xml rdf-abac-coverage-report/pom.xml; then
+if git diff --quiet -- pom.xml rdf-pbac-lib/pom.xml rdf-pbac-fuseki/pom.xml rdf-pbac-fuseki-server/pom.xml rdf-pbac-eval/pom.xml rdf-pbac-coverage-report/pom.xml; then
   echo "The POM files are already at version ${version}; nothing to commit." >&2
   git switch develop
   git branch -d "${prepare_branch}"
   exit 1
 fi
 
-git add pom.xml rdf-abac-lib/pom.xml rdf-abac-fuseki/pom.xml rdf-abac-fuseki-server/pom.xml rdf-abac-eval/pom.xml rdf-abac-coverage-report/pom.xml CHANGELOG.md
+git add pom.xml rdf-pbac-lib/pom.xml rdf-pbac-fuseki/pom.xml rdf-pbac-fuseki-server/pom.xml rdf-pbac-eval/pom.xml rdf-pbac-coverage-report/pom.xml CHANGELOG.md
 git commit -m "chore: prepare release ${version}"
 git push --set-upstream origin "${prepare_branch}"
 
