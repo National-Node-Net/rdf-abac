@@ -800,6 +800,35 @@ public class LabelsStoreRocksDB implements LabelsStore, AutoCloseable {
     }
 
     /**
+     * Returns every distinct label ever written to this store, gathered by scanning all
+     * column families (SPO, S__, _P_, ___) and parsing each entry's stored label list.
+     * <p>
+     * This is a full scan - expensive on a large store - but is only invoked once per
+     * OPA decision request to build the vocabulary sent alongside the request (see
+     * {@link uk.gov.dbt.ndtp.jena.abac.lib.OpaDatasetFilterProvider}), not on the
+     * per-triple label lookup hot path.
+     */
+    @Override
+    public Set<String> distinctLabels() {
+        if (db == null) {
+            throw new RuntimeException("The RocksDB labels store appears to be closed.");
+        }
+
+        Set<String> distinct = new HashSet<>();
+        for (ColumnFamilyHandle cfh : allColumnFamilies()) {
+            try (RocksIterator it = db.newIterator(cfh)) {
+                for (it.seekToFirst(); it.isValid(); it.next()) {
+                    ByteBuffer valueBuffer = ByteBuffer.wrap(it.value()).order(ByteOrder.LITTLE_ENDIAN);
+                    while (valueBuffer.position() < valueBuffer.limit()) {
+                        parser.parseStrings(valueBuffer, distinct);
+                    }
+                }
+            }
+        }
+        return distinct;
+    }
+
+    /**
      * Invoke compaction on the underlying RocksDB
      * <p>
      * After compaction, the RocksDB database should have a more predictable and

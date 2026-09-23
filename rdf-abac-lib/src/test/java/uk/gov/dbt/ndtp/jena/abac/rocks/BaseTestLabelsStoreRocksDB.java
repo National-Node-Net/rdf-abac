@@ -35,12 +35,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+
+import uk.gov.dbt.ndtp.jena.abac.ABACTestRunner;
 import uk.gov.dbt.ndtp.jena.abac.labels.Labels;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStore;
 import uk.gov.dbt.ndtp.jena.abac.labels.LabelsStoreRocksDB;
 import uk.gov.dbt.ndtp.jena.abac.labels.StoreFmt;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * RocksDB store specific tests.
@@ -101,5 +103,33 @@ public abstract class BaseTestLabelsStoreRocksDB extends AbstractTestLabelsStore
         assertThrows(RuntimeException.class, () -> {
             List<String> x = store.labelsForTriples(Triple.create(triple1.getSubject(), triple1.getObject(), Node.ANY));  //warning
         });
+    }
+
+    @ParameterizedTest(name = "{index}: Store = {1}, LabelMode = {0}")
+    @MethodSource("provideLabelAndStorageFmt")
+    public void labelsStore_distinctLabels_empty(LabelsStoreRocksDB.LabelMode labelMode, StoreFmt storeFmt) {
+        store = createLabelsStore(labelMode, storeFmt);
+        assertTrue(store.distinctLabels().isEmpty());
+    }
+
+    @ParameterizedTest(name = "{index}: Store = {1}, LabelMode = {0}")
+    @MethodSource("provideLabelAndStorageFmt")
+    public void labelsStore_distinctLabels_returnsAllUniqueLabels(LabelsStoreRocksDB.LabelMode labelMode, StoreFmt storeFmt) {
+        store = createLabelsStore(labelMode, storeFmt);
+        store.add(triple1, "label-1");
+        store.add(triple2, "label-2");
+
+        ABACTestRunner.assertEqualsUnordered(List.of("label-1", "label-2"), List.copyOf(store.distinctLabels()));
+    }
+
+    @ParameterizedTest(name = "{index}: Store = {1}, LabelMode = {0}")
+    @MethodSource("provideLabelAndStorageFmt")
+    public void labelsStore_distinctLabels_deduplicatesSameLabelOnDifferentTriples(LabelsStoreRocksDB.LabelMode labelMode, StoreFmt storeFmt) {
+        store = createLabelsStore(labelMode, storeFmt);
+        store.add(triple1, "shared-label");
+        store.add(triple2, "shared-label");
+
+        assertEquals(1, store.distinctLabels().size());
+        assertTrue(store.distinctLabels().contains("shared-label"));
     }
 }
