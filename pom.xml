@@ -109,7 +109,7 @@
     <dependency.junit5-platform>1.12.1</dependency.junit5-platform>
     <dependency.log4j2>2.24.3</dependency.log4j2>
     <dependency.mockito>5.16.1</dependency.mockito>
-    <dependency.openhft>0.27ea0</dependency.openhft>
+    <dependency.openhft>0.27ea1</dependency.openhft>
     <dependency.slf4j>2.0.17</dependency.slf4j>
   </properties>
 
