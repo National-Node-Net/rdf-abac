@@ -141,6 +141,6 @@ Using the existing ByString storage format to establish a baseline. It took 54 s
 ### Conclusion
 So WY3 was the smallest in terms of memory footprint and the XX suite were the fastest - the 32 & 64 bits being 1st and 2nd respectively.
 
-© Crown Copyright 2025. This work has been developed by the National Digital Twin Programme and is legally attributed to the Department for Business and Trade (UK) as the
+© Crown Copyright 2026. This work has been developed by the National Digital Twin Programme and is legally attributed to the UK's Department for Business, Innovation, Science and Trade (BIST) as the
 governing entity.  
 Licensed under the Open Government Licence v3.0.
