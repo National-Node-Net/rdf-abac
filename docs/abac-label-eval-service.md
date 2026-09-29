@@ -40,6 +40,6 @@ The ABAC Label Evaluator (ALE) is part of the secure layer of Integration Archit
 Kafka, and secure-agents, it is a service that other services can rely
 on.
 
-© Crown Copyright 2025. This work has been developed by the National Digital Twin Programme and is legally attributed to the Department for Business and Trade (UK) as the
+© Crown Copyright 2026. This work has been developed by the National Digital Twin Programme and is legally attributed to the UK's Department for Business, Innovation, Science and Trade (BIST) as the
 governing entity.  
 Licensed under the Open Government Licence v3.0.
