@@ -1,3 +1,5 @@
+![OSPO compliance](https://raw.githubusercontent.com/National-Node-Net/ndt-overwatch/sync/governance-badges/repositories/rdf-abac/ospo-compliance.svg) ![Develop activity](https://raw.githubusercontent.com/National-Node-Net/ndt-overwatch/sync/governance-badges/repositories/rdf-abac/develop-activity.svg) ![Last checked](https://raw.githubusercontent.com/National-Node-Net/ndt-overwatch/sync/governance-badges/repositories/rdf-abac/last-checked.svg)
+
 # README  
 
 **Repository:** `rdf-abac`  
