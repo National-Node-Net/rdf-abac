@@ -102,7 +102,7 @@
     <dependency.rocksdb>9.10.0</dependency.rocksdb>
 
     <!-- External dependencies -->
-    <dependency.assert>3.27.3</dependency.assert>
+    <dependency.assert>3.27.7</dependency.assert>
     <dependency.guava>33.4.5-jre</dependency.guava>
     <dependency.jmh>1.37</dependency.jmh>
     <dependency.junit5>5.12.1</dependency.junit5>
